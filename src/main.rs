@@ -43,7 +43,7 @@ fn main() {
   if args.len() != 1 || args[0] == "help" || args[0] == "-h" || args[0] == "--help" {
     println!("{} v{}\n", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
     println!("Usage:");
-    println!("    {} <address:port>", env!("CARGO_PKG_NAME"));
+    println!("    {} host[:port]", env!("CARGO_PKG_NAME"));
     std::process::exit(0);
   }
 
