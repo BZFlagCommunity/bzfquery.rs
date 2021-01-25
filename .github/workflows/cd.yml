@@ -24,8 +24,61 @@ jobs:
 
       - name: Release 📦
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: target/release/bzfquery
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-win:
+    runs-on: windows-latest
+
+    steps:
+      - name: Setup repo ✨
+        uses: actions/checkout@v2
+
+      - name: Release build 🧱
+        run: cargo build --release --verbose
+
+      - name: Release 📦
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/bzfquery.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-win-colorless:
+    runs-on: windows-latest
+
+    steps:
+      - name: Setup repo ✨
+        uses: actions/checkout@v2
+
+      - name: Release build 🧱
+        run: cargo build --release --verbose --no-default-features && move target/release/bzfquery.exe target/release/bzfquery-colorless.exe
+
+      - name: Release 📦
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/bzfquery-colorless.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Setup repo ✨
+        uses: actions/checkout@v2
+
+      - name: Release build 🧱
+        run: cargo build --release --verbose && mv target/release/bzfquery target/release/bzfquery_macos
+
+      - name: Strip binary ✂
+        run: strip target/release/bzfquery_macos
+
+      - name: Release 📦
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/bzfquery_macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
