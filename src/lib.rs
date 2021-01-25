@@ -4,7 +4,7 @@ use std::net::TcpStream;
 use std::str::from_utf8;
 
 mod constants;
-use constants::*;
+pub use constants::*;
 
 pub struct Query {
   pub style: u16,
@@ -41,14 +41,14 @@ pub struct Team {
 }
 
 pub struct Player {
-  id: u8,
-  player_type: u16,
-  team: u16,
-  wins: u16,
-  losses: u16,
-  tks: u16,
-  callsign: String,
-  motto: String,
+  pub id: u8,
+  pub player_type: u16,
+  pub team: u16,
+  pub wins: u16,
+  pub losses: u16,
+  pub tks: u16,
+  pub callsign: String,
+  pub motto: String,
 }
 
 impl fmt::Display for Query {
