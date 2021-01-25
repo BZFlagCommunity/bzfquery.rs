@@ -9,3 +9,10 @@
 Rust version of bzfquery with no external dependencies. It can be used as a library or form the command line.
 
 Usage: `bzfquery host[:port]`
+
+```rust
+use bzfquery::*;
+
+let query = query("bzflag.allejo.io", 5130);
+println!("{}", query);
+```
