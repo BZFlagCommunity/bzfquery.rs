@@ -1,0 +1,28 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo ✨
+        uses: actions/checkout@v2
+
+      - name: Release build 🧱
+        run: cargo build --release --verbose
+
+      - name: Release 📦
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: target/release/bzfquery
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
