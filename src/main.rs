@@ -1,5 +1,3 @@
-use bzfquery;
-
 #[cfg(feature = "color")]
 mod color;
 #[cfg(feature = "color")]
@@ -47,7 +45,7 @@ fn main() {
     std::process::exit(0);
   }
 
-  let parts: Vec<&str> = args[0].split(":").collect();
+  let parts: Vec<&str> = args[0].split(':').collect();
   let host = parts[0];
   let port = match parts.len() {
     2 => parts[1].parse().unwrap_or(DEFAULT_PORT),
@@ -63,7 +61,7 @@ fn main() {
   println!("Ricochet:    {}", bool_to_string(query.options.ricochet));
   println!("Team kills:  {}", bool_to_string(!query.options.no_team_kills));
 
-  println!("");
+  println!();
   print_heading("Teams");
 
   for team in query.teams {
@@ -98,9 +96,9 @@ fn main() {
   max_player_callsign_length += 2;
   max_player_score_length += 2;
 
-  println!("");
+  println!();
   print_heading("Players");
-  if query.players.len() > 0 {
+  if query.players.is_empty() {
     for player in query.players {
       println!(
         " • {callsign}{callsign_padding}[{bright}{white}{score}{reset}]{score_padding}({bright}{team_color}{team}{reset})",

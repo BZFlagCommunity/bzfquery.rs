@@ -133,7 +133,7 @@ fn get_response(stream: &mut TcpStream, buffer: &mut [u8], code: &[u8; 2]) {
 }
 
 fn cmd(stream: &mut TcpStream, buffer: &mut [u8], code: &[u8; 2]) {
-  stream.write(&[0u8, 0u8, code[0], code[1]]).unwrap();
+  stream.write_all(&[0u8, 0u8, code[0], code[1]]).unwrap();
   get_response(stream, buffer, code);
 }
 
@@ -141,13 +141,13 @@ pub fn query(host: &str, port: u16) -> Query {
   let mut stream = TcpStream::connect(format!("{}:{}", host, port)).unwrap();
 
   // send magic header
-  stream.write(b"BZFLAG\r\n\r\n").unwrap();
+  stream.write_all(b"BZFLAG\r\n\r\n").unwrap();
 
   let mut buffer = [0u8; BUFFER_SIZE];
 
   // check magic and protocol version
-  stream.read(&mut buffer).unwrap();
-  if &buffer[0..8] != b"BZFS0221" {
+  stream.read_exact(&mut buffer[0..9]).unwrap();
+  if &buffer[0..9] != b"BZFS0221\0" {
     let text = from_utf8(&buffer).unwrap();
     panic!("invalid protocol version: {}", text);
   }
