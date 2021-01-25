@@ -19,6 +19,9 @@ jobs:
       - name: Release build 🧱
         run: cargo build --release --verbose
 
+      - name: Strip binary ✂
+        run: strip target/release/bzfquery
+
       - name: Release 📦
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
