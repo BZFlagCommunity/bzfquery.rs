@@ -8,7 +8,15 @@
 
 Rust version of bzfquery with no external dependencies. It can be used as a library or form the command line.
 
+# CLI
+
+```sh
+cargo install bzfquery
+```
+
 Usage: `bzfquery host[:port]`
+
+# Library
 
 ```rust
 use bzfquery::*;
