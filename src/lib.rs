@@ -154,7 +154,7 @@ pub fn query(host: &str, port: u16) -> Query {
 
   cmd(&mut stream, &mut buffer, MSG_QUERY_GAME);
 
-  // must match sendQueryGame order at https://github.com/BZFlag-Dev/bzflag/blob/2.4/src/bzfs/bzfs.cxx#L3100-L3132
+  // must match sendQueryGame order at https://github.com/BZFlag-Dev/bzflag/blob/58736bd8fb2094f8ef9a17961e838d12634dd871/src/bzfs/bzfs.cxx#L3100-L3132
 
   let raw_options = unpack_u16(&buffer, 1);
 
@@ -196,12 +196,12 @@ pub fn query(host: &str, port: u16) -> Query {
 
   cmd(&mut stream, &mut buffer, MSG_QUERY_PLAYERS);
 
-  // must match sendQueryPlayers at https://github.com/BZFlag-Dev/bzflag/blob/2.4/src/bzfs/bzfs.cxx#L3134-L3165
+  // must match sendQueryPlayers at https://github.com/BZFlag-Dev/bzflag/blob/58736bd8fb2094f8ef9a17961e838d12634dd871/src/bzfs/bzfs.cxx#L3134-L3165
   let num_players = unpack_u16(&buffer, 1);
 
   get_response(&mut stream, &mut buffer, MSG_TEAM_UPDATE);
 
-  // must match sendTeamUpdate at https://github.com/BZFlag-Dev/bzflag/blob/2.4/src/bzfs/bzfs.cxx#L470-L505
+  // must match sendTeamUpdate at https://github.com/BZFlag-Dev/bzflag/blob/58736bd8fb2094f8ef9a17961e838d12634dd871/src/bzfs/bzfs.cxx#L470-L505
   let num_teams = buffer[0];
   for i in 0..num_teams {
     let team_buffer = &buffer[1..buffer.len()];
