@@ -1,16 +1,16 @@
 use bzfquery;
 
-const DEFAULT_PORT: u16 = 5154;
+#[cfg(feature = "color")]
+mod color;
+#[cfg(feature = "color")]
+use color::*;
 
-const RESET: &str = "\x1b[0m";
-const BRIGHT: &str = "\x1b[1m";
-const UNDERLINE: &str = "\x1b[4m";
-const RED: &str = "\x1b[31m";
-const GREEN: &str = "\x1b[32m";
-const YELLOW: &str = "\x1b[33m";
-const BLUE: &str = "\x1b[34m";
-const MAGENTA: &str = "\x1b[35m";
-const WHITE: &str = "\x1b[37m";
+#[cfg(not(feature = "color"))]
+mod no_color;
+#[cfg(not(feature = "color"))]
+use no_color::*;
+
+const DEFAULT_PORT: u16 = 5154;
 
 fn print_heading(text: &str) {
   println!("{}{}{}{}{}", BRIGHT, UNDERLINE, WHITE, text, RESET);

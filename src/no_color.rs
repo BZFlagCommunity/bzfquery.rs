@@ -1,0 +1,9 @@
+pub const RESET: &str = "";
+pub const BRIGHT: &str = "";
+pub const UNDERLINE: &str = "";
+pub const RED: &str = "";
+pub const GREEN: &str = "";
+pub const YELLOW: &str = "";
+pub const BLUE: &str = "";
+pub const MAGENTA: &str = "";
+pub const WHITE: &str = "";
