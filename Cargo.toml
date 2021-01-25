@@ -1,0 +1,33 @@
+[package]
+name = "bzfquery"
+version = "0.1.0"
+authors = ["The Noah <thenoahbz@gmail.com>"]
+edition = "2018"
+categories = ["command-line-utilities"]
+readme = "README.md"
+homepage = "https://github.com/BZFlagCommunity/bzfquery.rs"
+repository = "https://github.com/BZFlagCommunity/bzfquery.rs"
+license-file = "LICENSE"
+include = [
+  "**/*.rs",
+  "Cargo.{toml,lock}",
+  "LICENSE",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "bzfquery"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bzfquery"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+panic = "abort"
+
+[dependencies]
