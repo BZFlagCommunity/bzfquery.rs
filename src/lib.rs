@@ -147,9 +147,14 @@ pub fn query(host: &str, port: u16) -> Query {
 
   // check magic and protocol version
   stream.read_exact(&mut buffer[0..9]).unwrap();
-  if &buffer[0..9] != b"BZFS0221\0" {
+
+  // must match https://github.com/BZFlag-Dev/bzflag/blob/58736bd8fb2094f8ef9a17961e838d12634dd871/src/date/buildDate.cxx#L106-L110
+  // note: last byte is 0xff if full, otherwise it is undefined (due to use of memcpy) - see https://github.com/BZFlag-Dev/bzflag/blob/58736bd8fb2094f8ef9a17961e838d12634dd871/src/bzfs/bzfs.cxx#L1389
+  if &buffer[0..8] != b"BZFS0221" {
     let text = from_utf8(&buffer).unwrap();
     panic!("invalid protocol version: {}", text);
+  } else if buffer[9] == 0xff {
+    panic!("server is full");
   }
 
   cmd(&mut stream, &mut buffer, MSG_QUERY_GAME);
