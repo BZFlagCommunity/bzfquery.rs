@@ -1,5 +1,6 @@
 #[cfg(feature = "color")]
 mod color;
+use bzfquery::TeamColor;
 #[cfg(feature = "color")]
 use color::*;
 
@@ -18,15 +19,14 @@ fn bool_to_string(value: bool) -> String {
   format!("{}{}{}{}", BRIGHT, if value { GREEN } else { RED }, if value { "yes" } else { "no" }, RESET)
 }
 
-fn team_color(team: u16) -> &'static str {
+fn team_color(team: TeamColor) -> &'static str {
   match team {
-    0 | 7 => YELLOW,
-    1 => RED,
-    2 => GREEN,
-    3 => BLUE,
-    4 => MAGENTA,
-    5 | 6 => WHITE,
-    _ => "",
+    TeamColor::Rogue | TeamColor::Hunter => YELLOW,
+    TeamColor::Red => RED,
+    TeamColor::Green => GREEN,
+    TeamColor::Blue => BLUE,
+    TeamColor::Purple => MAGENTA,
+    TeamColor::Observer | TeamColor::Rabbit => WHITE,
   }
 }
 

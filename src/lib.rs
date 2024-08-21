@@ -6,8 +6,70 @@ use std::str::from_utf8;
 mod constants;
 pub use constants::*;
 
+// must match GameType order at https://github.com/BZFlag-Dev/bzflag/blob/c136308903a77ab8e7ed5bfebec5c13fecee0711/include/global.h#L89-L95
+#[derive(Debug, Clone, Copy)]
+pub enum GameType {
+  FFA,
+  CTF,
+  OFFA,
+  Rabbit,
+}
+
+impl fmt::Display for GameType {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{}", GAME_STYLES[*self as usize])
+  }
+}
+
+impl From<u16> for GameType {
+  fn from(style: u16) -> Self {
+    match style {
+      0 => GameType::FFA,
+      1 => GameType::CTF,
+      2 => GameType::OFFA,
+      3 => GameType::Rabbit,
+      _ => panic!("invalid game style: {}", style),
+    }
+  }
+}
+
+// must match TeamColor order at https://github.com/BZFlag-Dev/bzflag/blob/c136308903a77ab8e7ed5bfebec5c13fecee0711/include/global.h#L54-L66
+#[derive(Debug, Clone, Copy)]
+pub enum TeamColor {
+  Rogue,
+  Red,
+  Green,
+  Blue,
+  Purple,
+  Observer,
+  Rabbit,
+  Hunter,
+}
+
+impl fmt::Display for TeamColor {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{}", TEAM_NAMES[*self as usize])
+  }
+}
+
+impl From<u16> for TeamColor {
+  fn from(team: u16) -> Self {
+    match team {
+      0 => TeamColor::Rogue,
+      1 => TeamColor::Red,
+      2 => TeamColor::Green,
+      3 => TeamColor::Blue,
+      4 => TeamColor::Purple,
+      5 => TeamColor::Observer,
+      6 => TeamColor::Rabbit,
+      7 => TeamColor::Hunter,
+      _ => panic!("invalid team color: {}", team),
+    }
+  }
+}
+
 pub struct Query {
-  pub style: u16,
+  pub style: GameType,
   pub options: Options,
   pub max_players: u16,
   pub max_shots: u16,
@@ -33,7 +95,7 @@ pub struct Options {
 }
 
 pub struct Team {
-  pub team: u16,
+  pub team: TeamColor,
   pub size: u16,
   pub max_size: u16,
   pub wins: u16,
@@ -43,7 +105,7 @@ pub struct Team {
 pub struct Player {
   pub id: u8,
   pub player_type: u16,
-  pub team: u16,
+  pub team: TeamColor,
   pub wins: u16,
   pub losses: u16,
   pub tks: u16,
@@ -67,7 +129,7 @@ impl fmt::Display for Query {
     write!(
       f,
       "style: {}\noptions:\n  flags: {}\n  jumping: {}\n  inertia: {}\n  ricochet: {}\n  shaking: {}\n  antidote: {}\n  handicap: {}\n  no team kills: {}\nmax_players: {}\nmax_shots: {}\nshake_wins: {}\nshake_timeout: {}\nmax_player_score: {}\nmax_team_score: {}\nmax_time: {}\nelapsed_time: {}\nteams:{}\nplayers:{}",
-      GAME_STYLES[self.style as usize],
+      self.style,
       self.options.flags,
       self.options.jumping,
       self.options.inertia,
@@ -164,7 +226,7 @@ pub fn query(host: &str, port: u16) -> Query {
   let raw_options = unpack_u16(&buffer, 1);
 
   let mut query = Query {
-    style: unpack_u16(&buffer, 0),
+    style: unpack_u16(&buffer, 0).into(),
     options: Options {
       flags: (raw_options & GAME_OPTION_FLAGS) > 0,
       jumping: (raw_options & GAME_OPTION_JUMPING) > 0,
@@ -213,7 +275,7 @@ pub fn query(host: &str, port: u16) -> Query {
     let team_id = unpack_u16(team_buffer, i as usize * 4);
 
     query.teams.push(Team {
-      team: team_id,
+      team: team_id.into(),
       size: unpack_u16(team_buffer, i as usize * 4 + 1),
       max_size: max_team_sizes[team_id as usize],
       wins: unpack_u16(team_buffer, i as usize * 4 + 2),
@@ -223,7 +285,7 @@ pub fn query(host: &str, port: u16) -> Query {
 
   // manually add observer team as it is not part of MsgTeamUpdate
   query.teams.push(Team {
-    team: 5,
+    team: TeamColor::Observer,
     size: observer_size,
     max_size: max_team_sizes[5],
     wins: 0,
@@ -237,7 +299,7 @@ pub fn query(host: &str, port: u16) -> Query {
     query.players.push(Player {
       id: buffer[0],
       player_type: unpack_u16(player_buffer, 0),
-      team: unpack_u16(player_buffer, 1),
+      team: unpack_u16(player_buffer, 1).into(),
       wins: unpack_u16(player_buffer, 2),
       losses: unpack_u16(player_buffer, 3),
       tks: unpack_u16(player_buffer, 4),
