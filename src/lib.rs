@@ -116,7 +116,7 @@ fn unpack_u16(bytes: &[u8], index: usize) -> u16 {
 
 fn get_response(stream: &mut TcpStream, buffer: &mut [u8], code: &[u8; 2]) {
   let cmd_data_length;
-  let mut cmd_buffer = [0 as u8; 4];
+  let mut cmd_buffer = [0u8; 4];
 
   loop {
     stream.read_exact(&mut cmd_buffer).unwrap();
